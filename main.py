@@ -98,7 +98,7 @@ def get_question_links(url: str, category: str) -> list:
 
 
 if __name__ == '__main__':
-    category = "article"
+    category = "punctuation"
     raw_directory = f"raw/{category}"
     md_directory = f"md/{category}"
     pdf_directory = f"pdf/{category}"
@@ -135,33 +135,14 @@ if __name__ == '__main__':
     #         print(f"[Done] {md_f}")
 
     ## 3. Turn markdown pages into pdfs
-    # for filename in os.listdir(md_directory):
-    #     md_f = os.path.join(md_directory, filename)
-    #     pdf_f = os.path.join(pdf_directory, filename).replace(".md", ".pdf")
-    #     # if os.path.isfile(pdf_f):
-    #     #     continue
-    #     if os.path.isfile(md_f) and ".DS_Store" not in md_f:
-    #         with open(md_f, "r") as i_file:
-    #             md_page = i_file.read()
-    #         try:
-    #             save_to_pdf(pdf_f, md_page)
-    #         except BaseException as e:
-    #             print(f"[-] Error on {md_f}; {pdf_f}")
-    #             raise e
-
-    #         print(f"[Done] {pdf_f}")
-
-    ## 3.5. Turn markdown pages into pdfs with no answers
     for filename in os.listdir(md_directory):
         md_f = os.path.join(md_directory, filename)
-        pdf_f = os.path.join(pdf_no_ans_directory, filename).replace(".md", ".pdf")
+        pdf_f = os.path.join(pdf_directory, filename).replace(".md", ".pdf")
         # if os.path.isfile(pdf_f):
         #     continue
         if os.path.isfile(md_f) and ".DS_Store" not in md_f:
             with open(md_f, "r") as i_file:
                 md_page = i_file.read()
-                md_page = md_page[:md_page.index("Answers")]
-                md_page += "\n\n%s" % filename.replace(".md", "").replace("-", " ")
             try:
                 save_to_pdf(pdf_f, md_page)
             except BaseException as e:
@@ -169,6 +150,25 @@ if __name__ == '__main__':
                 raise e
 
             print(f"[Done] {pdf_f}")
+
+    ## 3.5. Turn markdown pages into pdfs with no answers
+    # for filename in os.listdir(md_directory):
+    #     md_f = os.path.join(md_directory, filename)
+    #     pdf_f = os.path.join(pdf_no_ans_directory, filename).replace(".md", ".pdf")
+    #     # if os.path.isfile(pdf_f):
+    #     #     continue
+    #     if os.path.isfile(md_f) and ".DS_Store" not in md_f:
+    #         with open(md_f, "r") as i_file:
+    #             md_page = i_file.read()
+    #             md_page = md_page[:md_page.index("Answers")]
+    #             md_page += "\n\n%s" % filename.replace(".md", "").replace("-", " ")
+    #         try:
+    #             save_to_pdf(pdf_f, md_page)
+    #         except BaseException as e:
+    #             print(f"[-] Error on {md_f}; {pdf_f}")
+    #             raise e
+
+    #         print(f"[Done] {pdf_f}")
 
     ## 4. some correction
     # import shutil
