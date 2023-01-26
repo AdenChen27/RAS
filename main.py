@@ -98,16 +98,17 @@ def get_question_links(url: str, category: str) -> list:
 
 
 if __name__ == '__main__':
-    category = "punctuation"
+    category = "article"
     raw_directory = f"raw/{category}"
     md_directory = f"md/{category}"
     pdf_directory = f"pdf/{category}"
+    pdf_no_ans_directory = f"pdf_no_ans/{category}"
     ## 1. Crawling
-    # # f_url_page = f"https://www.englishgrammar.org/page/{{page}}/?s={category}"
+    # f_url_page = f"https://www.englishgrammar.org/page/{{page}}/?s={category}"
     # # url = "https://www.englishgrammar.org/category/conjunctions/"
     # # f_url_page = f"https://www.englishgrammar.org/category/{category}/page/{{page}}/"
-    # f_url_page = "https://www.englishgrammar.org/category/commas/page/{page}/"
-    # for i in range(1, 110):
+    # # f_url_page = "https://www.englishgrammar.org/category/commas/page/{page}/"
+    # for i in range(1, 65):
     #     print(f"on page {i}")
     #     get_question_links(
     #         f_url_page.format(page=i), 
@@ -134,14 +135,33 @@ if __name__ == '__main__':
     #         print(f"[Done] {md_f}")
 
     ## 3. Turn markdown pages into pdfs
+    # for filename in os.listdir(md_directory):
+    #     md_f = os.path.join(md_directory, filename)
+    #     pdf_f = os.path.join(pdf_directory, filename).replace(".md", ".pdf")
+    #     # if os.path.isfile(pdf_f):
+    #     #     continue
+    #     if os.path.isfile(md_f) and ".DS_Store" not in md_f:
+    #         with open(md_f, "r") as i_file:
+    #             md_page = i_file.read()
+    #         try:
+    #             save_to_pdf(pdf_f, md_page)
+    #         except BaseException as e:
+    #             print(f"[-] Error on {md_f}; {pdf_f}")
+    #             raise e
+
+    #         print(f"[Done] {pdf_f}")
+
+    ## 3.5. Turn markdown pages into pdfs with no answers
     for filename in os.listdir(md_directory):
         md_f = os.path.join(md_directory, filename)
-        pdf_f = os.path.join(pdf_directory, filename).replace(".md", ".pdf")
+        pdf_f = os.path.join(pdf_no_ans_directory, filename).replace(".md", ".pdf")
         # if os.path.isfile(pdf_f):
         #     continue
         if os.path.isfile(md_f) and ".DS_Store" not in md_f:
             with open(md_f, "r") as i_file:
                 md_page = i_file.read()
+                md_page = md_page[:md_page.index("Answers")]
+                md_page += "\n\n%s" % filename.replace(".md", "").replace("-", " ")
             try:
                 save_to_pdf(pdf_f, md_page)
             except BaseException as e:
@@ -159,58 +179,6 @@ if __name__ == '__main__':
     #         shutil.copyfile(_f, f)
     #         print(f"[Done] {f}")
     
-
-
-#     save_to_pdf("test.pdf", """
-# 1. Unless you work hard, you _____ win.
-#     - can
-#     - cannot
-# 2. Unless the boys work hard, they _____ fail.
-#     - will
-#     - won't
-# 3. Unless you _____ early, you will get stuck in the traffic.
-#     - start
-#     - started
-#     - don't start
-# 4. Unless you hire a taxi, you _____ miss the train.
-#     - will
-#     - won't
-# 5. _____ you obey my orders, you will be dismissed.
-#     - Unless
-#     - If
-# 6. Unless you take an umbrella, you _____ get wet.
-#     - will
-#     - won't
-# 7. Unless you work hard, you _____ pass the examination.
-#     - will
-#     - won't
-# 8. Unless we receive enough rain, there _____ be a shortage of electricity.
-#     - will
-#     - won't
-# 9. Unless Gopal _____ a good doctor his condition may get worse.
-#     - doesn't consult
-#     - consults
-# 10. Unless they come early, they _____ get the tickets.
-#     - will
-#     - won't
-
-
-# Answers: 
-
-# 1. Unless you work hard, you cannot win.
-# 2. Unless the boys work hard, they will fail.
-# 3. Unless you start early, you will get stuck in the traffic.
-# 4. Unless you hire a taxi, you will miss the train.
-# 5. Unless you obey my orders, you will be dismissed.
-# 6. Unless you take an umbrella, you will get wet.
-# 7. Unless you work hard, you won’t pass the examination.
-# 8. Unless we receive enough rain, there will be a shortage of electricity.
-# 9. Unless Gopal consults a good doctor his condition may get worse.
-# 10. Unless they come early, they won’t get the tickets.
-
-
-
-# """)
 
 
 
