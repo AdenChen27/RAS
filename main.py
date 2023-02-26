@@ -98,24 +98,24 @@ def get_question_links(url: str, category: str) -> list:
 
 
 if __name__ == '__main__':
-    category = "punctuation"
+    category = "conjunctions"
     raw_directory = f"raw/{category}"
     md_directory = f"md/{category}"
     pdf_directory = f"pdf/{category}"
     pdf_no_ans_directory = f"pdf_no_ans/{category}"
     ## 1. Crawling
-    # f_url_page = f"https://www.englishgrammar.org/page/{{page}}/?s={category}"
-    # # url = "https://www.englishgrammar.org/category/conjunctions/"
-    # # f_url_page = f"https://www.englishgrammar.org/category/{category}/page/{{page}}/"
-    # # f_url_page = "https://www.englishgrammar.org/category/commas/page/{page}/"
-    # for i in range(1, 65):
+    f_url_page = f"https://www.englishgrammar.org/page/{{page}}/?s=parallel"
+    # url = "https://www.englishgrammar.org/category/conjunctions/"
+    # f_url_page = f"https://www.englishgrammar.org/category/{category}/page/{{page}}/"
+    # f_url_page = "https://www.englishgrammar.org/category/commas/page/{page}/"
+    # for i in range(1, 4):
     #     print(f"on page {i}")
     #     get_question_links(
     #         f_url_page.format(page=i), 
     #         category=category
     #     )
 
-    ## 2. Filter out faulty pages and copy in `md`
+    # ## 2. Filter out faulty pages and copy in `md`
     # for filename in os.listdir(raw_directory):
     #     raw_f = os.path.join(raw_directory, filename)
     #     md_f = os.path.join(md_directory, filename)
@@ -134,34 +134,15 @@ if __name__ == '__main__':
     #             o_file.write(md_page)
     #         print(f"[Done] {md_f}")
 
-    ## 3. Turn markdown pages into pdfs
-    for filename in os.listdir(md_directory):
-        md_f = os.path.join(md_directory, filename)
-        pdf_f = os.path.join(pdf_directory, filename).replace(".md", ".pdf")
-        # if os.path.isfile(pdf_f):
-        #     continue
-        if os.path.isfile(md_f) and ".DS_Store" not in md_f:
-            with open(md_f, "r") as i_file:
-                md_page = i_file.read()
-            try:
-                save_to_pdf(pdf_f, md_page)
-            except BaseException as e:
-                print(f"[-] Error on {md_f}; {pdf_f}")
-                raise e
-
-            print(f"[Done] {pdf_f}")
-
-    ## 3.5. Turn markdown pages into pdfs with no answers
+    # ## 3. Turn markdown pages into pdfs
     # for filename in os.listdir(md_directory):
     #     md_f = os.path.join(md_directory, filename)
-    #     pdf_f = os.path.join(pdf_no_ans_directory, filename).replace(".md", ".pdf")
+    #     pdf_f = os.path.join(pdf_directory, filename).replace(".md", ".pdf")
     #     # if os.path.isfile(pdf_f):
     #     #     continue
     #     if os.path.isfile(md_f) and ".DS_Store" not in md_f:
     #         with open(md_f, "r") as i_file:
     #             md_page = i_file.read()
-    #             md_page = md_page[:md_page.index("Answers")]
-    #             md_page += "\n\n%s" % filename.replace(".md", "").replace("-", " ")
     #         try:
     #             save_to_pdf(pdf_f, md_page)
     #         except BaseException as e:
@@ -169,6 +150,27 @@ if __name__ == '__main__':
     #             raise e
 
     #         print(f"[Done] {pdf_f}")
+
+    ## 3.5. Turn markdown pages into pdfs with no answers
+    for filename in os.listdir(md_directory):
+        md_f = os.path.join(md_directory, filename)
+        pdf_f = os.path.join(pdf_no_ans_directory, filename).replace(".md", ".pdf")
+        # if os.path.isfile(pdf_f):
+        #     continue
+        if os.path.isfile(md_f) and ".DS_Store" not in md_f:
+            print(md_f)
+            with open(md_f, "r") as i_file:
+                md_page = i_file.read()
+                if "Answers" in md_page:
+                    md_page = md_page[:md_page.index("Answers")]
+                md_page += "\n\n%s" % filename.replace(".md", "").replace("-", " ")
+            try:
+                save_to_pdf(pdf_f, md_page)
+            except BaseException as e:
+                print(f"[-] Error on {md_f}; {pdf_f}")
+                raise e
+
+            print(f"[Done] {pdf_f}")
 
     ## 4. some correction
     # import shutil
